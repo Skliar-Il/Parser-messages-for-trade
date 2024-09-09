@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
-import redis
+from sqlalchemy import insert
+import redis, asyncio
 
 from config import POSTGRES_HOST, POSTGRES_NAME, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_USER, REDIS_HOST, REDIS_PORT
 
@@ -17,7 +18,4 @@ async_engine = create_async_engine(
     echo=False
 )
 
-sessionmaker = async_sessionmaker(async_engine, expire_on_commit=False)
-
-
-print(DATABASE_URL)
+async_session_factory = async_sessionmaker(async_engine, expire_on_commit=False)

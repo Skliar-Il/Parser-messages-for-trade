@@ -1,0 +1,43 @@
+version: "3.7"
+
+networks:
+  telegram_parser_network:
+    driver: bridge
+
+services:
+
+  db:
+    image: postgres:latest
+    container_name: db
+    ports:
+      - 5555:5432
+    env_file:
+      - .env-non-dev
+    networks:
+      - telegram_parser_network
+
+  redis:
+    image: redis:latest
+    container_name: redis_app
+    command: --port 4444
+    expose:
+      - 4444
+    env_file:
+      - .env-non-dev
+    networks:
+      - telegram_parser_network
+  
+  app:
+    build:
+      context: .
+    env_file:
+      - .env-non-dev
+    container_name: telegram_parser
+    entrypoint: "/telegram_parser/docker/build.sh"
+    networks:
+      - telegram_parser_network
+    depends_on:
+      - redis
+      - db
+    
+
